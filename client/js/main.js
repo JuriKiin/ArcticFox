@@ -21,6 +21,7 @@ function addPlace() {
     let place = createPlace();  //Create a plae
     if(!placeIsValid(place)) {  //Check if it's valid
         //Display a popup with information regarding why not valid
+        showToast("Make sure you fill out every box.",2000);
         return;
     }
     fetch('/addPlace', {    //Call our server
@@ -37,8 +38,11 @@ function addPlace() {
                 addPlaceToList(place);
                 addMarkersFromData(place);
                 clearForm();
+                showToast('Place Added.',1000);
             });
         }
+    }).catch((err) => {
+        showToast('Error Adding Place. Try Again.',1000);
     });
 };
 
@@ -96,6 +100,14 @@ function clearForm() {
 
 //This function validates whether we are sending correct and all parameters to the server.
 function placeIsValid(place) {
-    //Validate some stuff here
-    return true;
+    if(!place.lat || !place.lng || !place.name || !place.description) {
+        return false;
+    } else return true;
+}
+
+function showToast(text, time) {
+    let toast = document.getElementById("snackbar");
+    toast.innerText = text;
+    toast.className = "show";
+    setTimeout(function(){ toast.className = toast.className.replace("show", ""); }, time);
 }

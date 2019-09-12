@@ -43,39 +43,40 @@ const places = {
   ],
 };
 
-//This is a helper function to send JSON responses. Passes in a status code, and a content JSON object to send.
+// This is a helper function to send JSON responses.
+// Passes in a status code, and a content JSON object to send.
 const jsonResponse = (req, res, statusCode, content) => {
   res.writeHead(statusCode, { 'Content-Type': 'application/json' });
   res.write(JSON.stringify(content));
   res.end();
 };
 
-//Return our places
+// Return our places
 const getPlaces = (req, res, url) => {
-  const params = new URLSearchParams(url.search); //Get the parameters
-  if (params.get('size')) { //If we have a size parameter
-    if (params.get('size') >= places.results.length) return jsonResponse(req, res, 200, places);  //If our passed in size is too large, send all of them.
+  const params = new URLSearchParams(url.search); // Get the parameters
+  if (params.get('size')) { // If we have a size parameter
+    if (params.get('size') >= places.results.length) return jsonResponse(req, res, 200, places); // If our passed in size is too large, send all of them.
     // Otherwise, give them as many as they asked for.
     const limitedPlaces = {
       results: places.results.slice(0, params.get('size')),
     };
-    return jsonResponse(req, res, 200, limitedPlaces);  //Return the limited places
+    return jsonResponse(req, res, 200, limitedPlaces); // Return the limited places
   }
-  return jsonResponse(req, res, 200, places); //Otherwise, just send places.
+  return jsonResponse(req, res, 200, places); // Otherwise, just send places.
 };
 
-//Add a place (POST request)
+// Add a place (POST request)
 const addPlace = (req, res, body) => {
-  if (!body.lat || !body.lng || !body.name || !body.description) {  //If our body doesn't have all parameters
+  if (!body.lat || !body.lng || !body.name || !body.description) {
     const response = {
       error: 'Bad Request. Invalid Object.',
       id: 'missingParams',
       message: 'Object did not have all required properties',
     };
-    return jsonResponse(req, res, 400, response); //Send a bad request response.
+    return jsonResponse(req, res, 400, response); // Send a bad request response.
   }
 
-  //Create a new places
+  // Create a new places
   const newPlace = {
     // random ID taken from: http://stackoverflow.com/questions/105034/how-to-create-a-guid-uuid-in-javascript
     id: Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15),
@@ -85,11 +86,11 @@ const addPlace = (req, res, body) => {
     description: body.description,
     created: new Date().getTime(),
   };
-  places.results.push(newPlace);  //Add the place to our list.
+  places.results.push(newPlace); // Add the place to our list.
   const successJSON = {
     message: 'POST successful',
   };
-  return jsonResponse(req, res, 201, successJSON);  //Send a successful JSON response
+  return jsonResponse(req, res, 201, successJSON); // Send a successful JSON response
 };
 
 

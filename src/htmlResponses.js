@@ -1,6 +1,6 @@
 const fs = require('fs');
 
-//Create variables for all of the files we want to load
+// Create variables for all of the files we want to load
 const index = fs.readFileSync(`${__dirname}/../client/index.html`);
 const notFound = fs.readFileSync(`${__dirname}/../client/404.html`);
 const mainJS = fs.readFileSync(`${__dirname}/../client/js/main.js`);
@@ -15,7 +15,7 @@ const getHTML = (req, res, page) => {
   res.end();
 };
 
-//This function returns a specified JS file.
+// This function returns a specified JS file.
 const getJS = (req, res, path) => {
   res.writeHead(200, { 'Content-Type': 'application/javascript' });
   if (path.pathname === '/js/main.js') res.write(mainJS);
@@ -24,7 +24,7 @@ const getJS = (req, res, path) => {
   res.end();
 };
 
-//This function returns an image at a given path.
+// This function returns an image at a given path.
 const getImage = (req, res, path) => {
   if (path.pathname === '/media/logo.png') {
     res.writeHead(200, { 'Content-Type': 'image/png' });
@@ -33,11 +33,11 @@ const getImage = (req, res, path) => {
   }
 };
 
-//Our getIndex returns the index HTML page
+// Our getIndex returns the index HTML page
 module.exports.getIndex = (req, res) => {
   getHTML(req, res, index);
 };
-//Our 404 function returns the 404 HTML page
+// Our 404 function returns the 404 HTML page
 module.exports.get404 = (req, res) => {
   getHTML(req, res, notFound);
 };

@@ -5,6 +5,50 @@
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="https://jurikiin.com/KiinStyles/css/kiinStyle.css">
+        <style>
+            /* Toast CSS taken from: https://www.w3schools.com/howto/howto_js_snackbar.asp */
+            /* The snackbar - position it at the bottom and in the middle of the screen */
+            #snackbar {
+                visibility: hidden; /* Hidden by default. Visible on click */
+                min-width: 250px; /* Set a default minimum width */
+                margin-left: -125px; /* Divide value of min-width by 2 */
+                background-color: #333; /* Black background color */
+                color: #fff; /* White text color */
+                text-align: center; /* Centered text */
+                border-radius: 2px; /* Rounded borders */
+                padding: 16px; /* Padding */
+                position: fixed; /* Sit on top of the screen */
+                z-index: 1; /* Add a z-index if needed */
+                left: 50%; /* Center the snackbar */
+                bottom: 30px; /* 30px from the bottom */
+            }
+            /* Show the snackbar when clicking on a button (class added with JavaScript) */
+            #snackbar.show {
+                visibility: visible; /* Show the snackbar */
+                /* Add animation: Take 0.5 seconds to fade in and out the snackbar.
+                However, delay the fade out process for 2.5 seconds */
+                -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+                animation: fadein 0.5s, fadeout 0.5s 2.5s;
+            }
+
+            /*Animations to fade the snackbar in and out */
+            @-webkit-keyframes fadein {
+                from {bottom: 0; opacity: 0;}
+                to {bottom: 30px; opacity: 1;}
+            }
+            @keyframes fadein {
+                from {bottom: 0; opacity: 0;}
+                to {bottom: 30px; opacity: 1;}
+            }
+            @-webkit-keyframes fadeout {
+                from {bottom: 30px; opacity: 1;}
+                to {bottom: 0; opacity: 0;}
+            }
+            @keyframes fadeout {
+                from {bottom: 30px; opacity: 1;}
+                to {bottom: 0; opacity: 0;}
+            }
+        </style>
     </head>
     <body class='body-clear height-full'>
         <div class='align-left pad-left-5 bg-water' style='height: 10%'>
@@ -16,8 +60,8 @@
             <h1 class='ul align-center align-center font-text bor-bot-2 pad-bottom-5'>Places</h1>
             <div class='bor-bot-2 pad-bottom-5'>
                 <div class='align-center font-text grid-2'>
-                    <input type='text' class='pad-10p item-50' placeholder="Latitude" id='lat'>
-                    <input type='text' class='pad-10p item-50' placeholder="Longitude" id='lng'>
+                    <input type='text' class='pad-10p item-50' placeholder="Latitude" id='lat' readonly>
+                    <input type='text' class='pad-10p item-50' placeholder="Longitude" id='lng' readonly>
                 </div>
                 <div class='grid-1 margin-5'>
                     <input type='text' placeholder="Name" class='margin-10p pad-10p item-100' id='name' maxlength="15">
@@ -25,10 +69,11 @@
                 </div>
                 <button class='pulse bor-none pad-10p item-20 margin-left-5 bg-silk snow font-header font-sm' onclick="addPlace()">Add</button>
             </div>
-            <div id='places' class='o-scroll height-half'></div>
+            <div id='places' class='o-scroll height-half    '></div>
         </div>
 
         <div class='f-right bg-rock item-75' style='height:90%' id='map'></div>
+        <div id="snackbar" class='font-text'>Some text some message..</div>
         
         <script src='js/map.js'></script>
         <script src="js/main.js" async defer></script>
