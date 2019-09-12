@@ -1,0 +1,26 @@
+{
+  "name": "arcticfox",
+  "version": "1.0.0",
+  "description": "Save your spot forever!",
+  "main": "./src/server.js",
+  "scripts": {
+    "start": "node ./src/server.js",
+    "pretest": "eslint ./src  --fix",
+    "test": "echo \"Tests Complete\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JuriKiin/ArcticFox.git"
+  },
+  "author": "Juri Kiin",
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/JuriKiin/ArcticFox/issues"
+  },
+  "homepage": "https://github.com/JuriKiin/ArcticFox#readme",
+  "devDependencies": {
+    "eslint": "^6.3.0",
+    "eslint-config-airbnb": "^18.0.1",
+    "eslint-plugin-import": "^2.18.2"
+  }
+}
