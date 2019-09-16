@@ -51,6 +51,11 @@ const jsonResponse = (req, res, statusCode, content) => {
   res.end();
 };
 
+const jsonMetaResponse = (req, res, statusCode) => {
+  res.writeHead(statusCode, { 'Content-Type': 'application/json' });
+  res.end();
+};
+
 // Return our places
 const getPlaces = (req, res, url) => {
   const params = new URLSearchParams(url.search); // Get the parameters
@@ -63,6 +68,10 @@ const getPlaces = (req, res, url) => {
     return jsonResponse(req, res, 200, limitedPlaces); // Return the limited places
   }
   return jsonResponse(req, res, 200, places); // Otherwise, just send places.
+};
+
+const getPlacesMeta = (req, res) => {
+  jsonMetaResponse(req, res, 200);
 };
 
 // Add a place (POST request)
@@ -89,10 +98,48 @@ const addPlace = (req, res, body) => {
   places.results.push(newPlace); // Add the place to our list.
   const successJSON = {
     message: 'POST successful',
+    objectID: newPlace.id,
   };
   return jsonResponse(req, res, 201, successJSON); // Send a successful JSON response
 };
 
+const updatePlace = (req, res, url, body) => {
+  // Check to see if we have a matching ID
+  const params = new URLSearchParams(url.search); // Get the parameters
+  if (!params.get('id') || (!body.lat || !body.lng || !body.name || !body.description)) { // If we have a size parameter
+    const response = {
+      error: 'Bad Request. No ID provided.',
+      id: 'no_id',
+      message: 'No ID provided with call.',
+    };
+    return jsonResponse(req, res, 400, response); // Send a bad request response.
+  }
+
+  // Check if we have a full body
+  if (!body.lat || !body.lng || !body.name || !body.description) {
+    const response = {
+      error: 'Bad Request. Invalid Object.',
+      id: 'missingParams',
+      message: 'Object did not have all required properties',
+    };
+    return jsonResponse(req, res, 400, response); // Send a bad request response.
+  }
+
+  // WE HAVE AN ID! AND WE HAVE A CORRECT BODY!
+  for (let i = 0; i < places.results.length; i++) {
+    if (places.results[i].id === params.get('id')) {
+      places.results[i].lat = body.lat;
+      places.results[i].lng = body.lng;
+      places.results[i].name = body.name;
+      places.results[i].description = body.description;
+      return jsonResponse(req, res, 204, {});
+    }
+  }
+  return jsonResponse(req, res, 400, { error: 'Bad Request. No Object Found.', id: 'object not found', message: 'Object Not Found.' });
+};
+
 
 module.exports.getPlaces = getPlaces;
+module.exports.getPlacesMeta = getPlacesMeta;
 module.exports.addPlace = addPlace;
+module.exports.updatePlace = updatePlace;

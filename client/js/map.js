@@ -17,6 +17,7 @@ function initMap() {
         tempMarker = new google.maps.Marker({position: e.latLng, map: map});
         map.setZoom(14);
         map.panTo(tempMarker.getPosition());
+        clearForm();
         document.querySelector('#lat').value = tempMarker.getPosition().lat().toFixed(7);
         document.querySelector('#lng').value = tempMarker.getPosition().lng().toFixed(7);
     });
@@ -39,6 +40,7 @@ function addMarkersFromData(e) {
         map.setZoom(15);
         map.setCenter(marker.getPosition());
         infowindow.open(map, marker);
+        populateForm(e);
     });
     markers.push(marker);
 }

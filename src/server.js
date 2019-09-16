@@ -9,22 +9,13 @@ const jsonHandler = require('./jsonResponses.js');
 
 // This holds the key/value pairs for URLs
 // we might want to access and what should be done once accessed.
-const urls = {
-  '/': htmlHandler.getIndex,
-  '/media/logo.png': htmlHandler.getImage,
-  '/js/main.js': htmlHandler.getJS,
-  '/js/map.js': htmlHandler.getJS,
-  '/places': jsonHandler.getPlaces,
-  '/addPlace': jsonHandler.addPlace,
-};
 
-// Handle post requests
-const handlePOST = (req, res, reqURL) => {
+const handleBody = (req, res, reqURL) => {
   const body = [];
-
   req.on('error', () => { // If we get an error when posting, set our status code and end our response.
     res.statusCode = 400;
     res.end();
+    return body;
   });
   req.on('data', (chunk) => { // When we receive data, add it to our body.
     body.push(chunk);
@@ -34,27 +25,37 @@ const handlePOST = (req, res, reqURL) => {
     const bodyString = Buffer.concat(body).toString();
     const bodyParams = JSON.parse(bodyString);
     if (reqURL.pathname === '/addPlace') jsonHandler.addPlace(req, res, bodyParams);
+    if (reqURL.pathname === '/updatePlace') jsonHandler.updatePlace(req, res, reqURL, bodyParams);
   });
 };
 
-// This function handles HEAD requests
-const handleHEAD = (req, res, pUrl) => {
-  if (pUrl.pathname === '/places') handlePOST(req, res, pUrl);
-  else htmlHandler.get404(req, res, pUrl);
+const urls = {
+  GET: {
+    '/': htmlHandler.getIndex,
+    '/media/logo.png': htmlHandler.getImage,
+    '/js/main.js': htmlHandler.getJS,
+    '/js/map.js': htmlHandler.getJS,
+    '/places': jsonHandler.getPlaces,
+  },
+  HEAD: {
+    '/placesHEAD': jsonHandler.getPlacesMeta,
+  },
+  POST: {
+    '/addPlace': handleBody,
+  },
+  PUT: {
+    '/updatePlace': handleBody,
+  },
 };
 
 // This function handles requests from the client.
 const onRequest = (req, res) => {
   const reqURL = url.parse(req.url); // Get our request URL.
-
-  // If we are attempting a post, send it to our function to handle post requests
-  // Send it to our function to handle HEAD requests
-  if (req.method === 'POST') {
-    handlePOST(req, res, reqURL);
-  } else if (req.method === 'HEAD') handleHEAD(req, res, reqURL);
-  // Else try to access the proper handler from our URL struct
-  else if (urls[reqURL.pathname]) urls[reqURL.pathname](req, res, reqURL);
-  else htmlHandler.get404(req, res, reqURL); // If we can't find anything to do, throw the 404.
+  if (urls[req.method][reqURL.pathname]) {
+    urls[req.method][reqURL.pathname](req, res, reqURL);
+  } else {
+    htmlHandler.get404(req, res);
+  }
 };
 
 http.createServer(onRequest).listen(port); // Create the server.
