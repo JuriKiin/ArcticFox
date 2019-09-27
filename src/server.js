@@ -38,7 +38,7 @@ const urls = {
     '/places': jsonHandler.getPlaces,
   },
   HEAD: {
-    '/placesHEAD': jsonHandler.getPlacesMeta,
+    '/places': jsonHandler.getPlacesMeta,
   },
   POST: {
     '/addPlace': handleBody,

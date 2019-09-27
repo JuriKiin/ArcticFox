@@ -2,27 +2,27 @@ window.onload = () => {
     getPlaces(10);
 }
 
-//GET call to get places with optional size param.
-function getPlaces(size) {
-    //Make a call to the server to get 10 places
-    fetch('examples/words.txt', {
+function getPlaces() {
+    //Make 
+    fetch('/places', {
         method: 'HEAD'
     }).then(res => {
         console.log(res);
     });
 
-
+    //Make a call to the server to get 10 places
     this.fetch('/places', {
         'Content-Type': 'application/json',
         'Accept': 'application/json'
     }).then(res => res.json()) .then(data => {
+        document.getElementById('places').style.opacity = 1.0;
+        document.getElementById('refresh').style.display = 'none';
         data.results.forEach(function(e) {   //Add each place to the list
             addPlaceToList(e);
             addMarkersFromData(e);
         });
     });
 }
-
 
 function submitForm(e) {
     if(e.textContent === 'Add') addPlace();
@@ -83,9 +83,9 @@ function updatePlace() {
     }).then((res) => {
         if(res.status == 204) {
             console.log(res);
-            res.json().then(() => {
-                showToast("Place Updated", 2000);
-            });
+            showToast("Place Updated", 2000);
+            document.getElementById('places').style.opacity = 0.7;
+            document.getElementById('refresh').style.display = 'block';
         }
     }).catch(() => {
         showToast('Error Updating Place. Try Again.', 2000);
