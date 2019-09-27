@@ -33,6 +33,7 @@ const urls = {
   GET: {
     '/': htmlHandler.getIndex,
     '/media/logo.png': htmlHandler.getImage,
+    '/media/favicon.png': htmlHandler.getImage,
     '/js/main.js': htmlHandler.getJS,
     '/js/map.js': htmlHandler.getJS,
     '/places': jsonHandler.getPlaces,

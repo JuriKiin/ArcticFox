@@ -6,6 +6,7 @@ const notFound = fs.readFileSync(`${__dirname}/../client/404.html`);
 const mainJS = fs.readFileSync(`${__dirname}/../client/js/main.js`);
 const mapJS = fs.readFileSync(`${__dirname}/../client/js/map.js`);
 const logo = fs.readFileSync(`${__dirname}/../client/media/logo.png`);
+const favicon = fs.readFileSync(`${__dirname}/../client/media/favicon.png`);
 
 
 // This function returns an HTML page from a given file
@@ -26,11 +27,21 @@ const getJS = (req, res, path) => {
 
 // This function returns an image at a given path.
 const getImage = (req, res, path) => {
-  if (path.pathname === '/media/logo.png') {
-    res.writeHead(200, { 'Content-Type': 'image/png' });
-    res.write(logo);
-    res.end();
+  let img;
+  switch (path.pathname) {
+    case '/media/logo.png':
+      img = logo;
+      break;
+    case '/media/favicon.png':
+      img = favicon;
+      break;
+    default:
+      img = logo;
+      break;
   }
+  res.writeHead(200, { 'Content-Type': 'image/png' });
+  res.write(img);
+  res.end();
 };
 
 // Our getIndex returns the index HTML page
