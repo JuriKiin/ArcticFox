@@ -12,7 +12,7 @@ const places = {
       id: '001',
       lat: 43.079647,
       lng: -77.680484,
-      name: 'My Seat',
+      name: 'Saved Seat',
       description: 'Im only getting up for a minute!',
       created: 1567300257000,
     },
@@ -20,7 +20,7 @@ const places = {
       id: '002',
       lat: 43.084255,
       lng: -77.679840,
-      name: 'Monday Classes',
+      name: 'Friday Classes',
       description: 'Here is where my monday classes are.',
       created: 1566792657000,
     },
@@ -71,7 +71,7 @@ const getPlaces = (req, res, url) => {
   }
   // Filter the results by alphabetical order.
   if (params.get('filter') && params.get('filter') === 'name') {
-    return jsonRes(req, res, 200, { results: copy.sort((a, b) => a.name > b.name) });
+    return jsonRes(req, res, 200, { results: copy.sort((a, b) => a.name < b.name) });
   }
 
   // Filtering size last so we can filter and then reduce the

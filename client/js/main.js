@@ -17,7 +17,8 @@ function getPlaces(url) {
     }).then(res => res.json()) .then(data => {
         document.getElementById('places').innerHTML = '';
         document.getElementById('places').style.opacity = 1.0;
-        document.getElementById('refresh').style.visibility = 'hidden';
+        document.getElementById('refresh').style.opacity = 0.7;
+        document.getElementById('refresh').classList.remove('bor-1');
         data.results.forEach(function(e) {   //Add each place to the list
             addPlaceToList(e);
             addMarkersFromData(e);
@@ -87,7 +88,8 @@ function updatePlace() {
             showToast("Place Updated", 2000);
             //Set our refresh button letting the user know the list isn't up to date.
             document.getElementById('places').style.opacity = 0.7;
-            document.getElementById('refresh').style.visibility = 'visible';
+            document.getElementById('refresh').style.opacity = 1.0;
+            document.getElementById('refresh').classList.add('bor-1');
         }
     }).catch(() => {
         showToast('Error Updating Place. Try Again.', 2000);
@@ -128,12 +130,15 @@ function addPlaceToList(place) {
     placeHeader.textContent = place.name;
     placeHeader.classList = 'font-text font-md';
 
-    let createdDate = new Date(place.created);
+    let createdDate;
+    place.created ? createdDate = new Date(place.created) : createdDate = new Date();
     let dd = createdDate.getDate();
     let mm = createdDate.getMonth()+1;
     let yyyy = createdDate.getFullYear();
     let hh = createdDate.getHours();
+    if(hh < 10) hh = '0' + hh;
     let min = createdDate.getMinutes();
+    if(min < 10) min = '0' + min;
     placeDate.textContent = mm + '-' + dd + '-' + yyyy + ' | ' + hh + ':' + min;
     placeDate.classList = 'font-sm font-text';
 
@@ -185,6 +190,11 @@ function showToast(text, time) {
     toast.innerText = text;
     toast.className = "show";
     setTimeout(function(){ toast.className = toast.className.replace("show", ""); }, time);
+}
+
+function refresh() {
+    if(document.getElementById('refresh').style.opacity != 1.0) return;
+    getPlaces('/places?size=10&filter=date');
 }
 
 function changeSort(e) {
