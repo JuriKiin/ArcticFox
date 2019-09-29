@@ -109,6 +109,7 @@ function addPlaceToList(place) {
     //Create elements
     let placeContainer = document.createElement('div');
     let placeHeader = document.createElement('h1');
+    let placeDate = document.createElement('p');
     let placeLocation = document.createElement('h2');
     let placeDesc = document.createElement('p');
 
@@ -127,6 +128,15 @@ function addPlaceToList(place) {
     placeHeader.textContent = place.name;
     placeHeader.classList = 'font-text font-md';
 
+    let createdDate = new Date(place.created);
+    let dd = createdDate.getDate();
+    let mm = createdDate.getMonth()+1;
+    let yyyy = createdDate.getFullYear();
+    let hh = createdDate.getHours();
+    let min = createdDate.getMinutes();
+    placeDate.textContent = mm + '-' + dd + '-' + yyyy + ' | ' + hh + ':' + min;
+    placeDate.classList = 'font-sm font-text';
+
     placeLocation.textContent = `Lat: ${place.lat} | Lng: ${place.lng}`;
     placeLocation.classList = 'font-sm font-text bold';
 
@@ -135,6 +145,7 @@ function addPlaceToList(place) {
 
     //Append children to the container
     placeContainer.appendChild(placeHeader);
+    placeContainer.appendChild(placeDate);
     placeContainer.appendChild(placeLocation);
     placeContainer.appendChild(placeDesc);
     document.querySelector('#places').insertBefore(placeContainer,document.querySelector('#places').firstChild);

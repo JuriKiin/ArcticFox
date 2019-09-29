@@ -66,7 +66,7 @@ const getPlaces = (req, res, url) => {
   // https://stackoverflow.com/questions/10123953/how-to-sort-an-array-by-a-date-property
   // Return them in the order of date
   if (params.get('filter') && params.get('filter') === 'date') {
-    const dateArr = copy.sort((a, b) => new Date(b.created) - new Date(a.created));
+    const dateArr = copy.sort((a, b) => new Date(a.created) - new Date(b.created));
     return jsonRes(req, res, 200, { results: dateArr });
   }
   // Filter the results by alphabetical order.
