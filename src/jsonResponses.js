@@ -45,12 +45,13 @@ const places = {
 
 // This is a helper function to send JSON responses.
 // Passes in a status code, and a content JSON object to send.
-const jsonResponse = (req, res, statusCode, content) => {
+const jsonRes = (req, res, statusCode, content) => {
   res.writeHead(statusCode, { 'Content-Type': 'application/json' });
   res.write(JSON.stringify(content));
   res.end();
 };
 
+// This function sends a response back without content
 const jsonMetaResponse = (req, res, statusCode) => {
   res.writeHead(statusCode, { 'Content-Type': 'application/json' });
   res.end();
@@ -58,16 +59,31 @@ const jsonMetaResponse = (req, res, statusCode) => {
 
 // Return our places
 const getPlaces = (req, res, url) => {
+  const copy = [...places.results]; // Make a copy for array sorting
   const params = new URLSearchParams(url.search); // Get the parameters
-  if (params.get('size')) { // If we have a size parameter
-    if (params.get('size') >= places.results.length) return jsonResponse(req, res, 200, places); // If our passed in size is too large, send all of them.
+  
+  // If we have a size parameter, limit the number of places we're sending.
+  if (params.get('size')) {
+    if (params.get('size') >= places.results.length) return jsonRes(req, res, 200, places); // If our passed in size is too large, send all of them.
     // Otherwise, give them as many as they asked for.
     const limitedPlaces = {
       results: places.results.slice(0, params.get('size')),
     };
-    return jsonResponse(req, res, 200, limitedPlaces); // Return the limited places
+    return jsonRes(req, res, 200, limitedPlaces); // Return the limited places
   }
-  return jsonResponse(req, res, 200, places); // Otherwise, just send places.
+
+  // Date Sort taken from:
+  // https://stackoverflow.com/questions/10123953/how-to-sort-an-array-by-a-date-property
+  // Return them in the order of date
+  if (params.get('filter') && params.get('filter') === 'date') {
+    return jsonRes(req, res, 200, copy.sort((a, b) => new Date(b.created) - new Date(a.created)));
+  }
+  //Filter the results by alphabetical order.
+  if (params.get('filter') && params.get('filter') === 'name') {
+    return jsonRes(req, res, 200, copy.sort((a, b) => a.name > b.name));
+  }
+
+  return jsonRes(req, res, 200, places); // Otherwise, just send places.
 };
 
 const getPlacesMeta = (req, res) => {
@@ -82,7 +98,7 @@ const addPlace = (req, res, body) => {
       id: 'missingParams',
       message: 'Object did not have all required properties',
     };
-    return jsonResponse(req, res, 400, response); // Send a bad request response.
+    return jsonRes(req, res, 400, response); // Send a bad request response.
   }
 
   // Create a new places
@@ -100,9 +116,10 @@ const addPlace = (req, res, body) => {
     message: 'POST successful',
     objectID: newPlace.id,
   };
-  return jsonResponse(req, res, 201, successJSON); // Send a successful JSON response
+  return jsonRes(req, res, 201, successJSON); // Send a successful JSON response
 };
 
+// Updated an existing place (PUT request)
 const updatePlace = (req, res, url, body) => {
   // Check to see if we have a matching ID
   const params = new URLSearchParams(url.search); // Get the parameters
@@ -112,7 +129,7 @@ const updatePlace = (req, res, url, body) => {
       id: 'no_id',
       message: 'No ID provided with call.',
     };
-    return jsonResponse(req, res, 400, response); // Send a bad request response.
+    return jsonRes(req, res, 400, response); // Send a bad request response.
   }
 
   // Check if we have a full body
@@ -122,7 +139,7 @@ const updatePlace = (req, res, url, body) => {
       id: 'missingParams',
       message: 'Object did not have all required properties',
     };
-    return jsonResponse(req, res, 400, response); // Send a bad request response.
+    return jsonRes(req, res, 400, response); // Send a bad request response.
   }
 
   // WE HAVE AN ID! AND WE HAVE A CORRECT BODY!
@@ -132,10 +149,10 @@ const updatePlace = (req, res, url, body) => {
       places.results[i].lng = body.lng;
       places.results[i].name = body.name;
       places.results[i].description = body.description;
-      return jsonResponse(req, res, 204, {});
+      return jsonRes(req, res, 204, {});
     }
   }
-  return jsonResponse(req, res, 400, { error: 'Bad Request. No Object Found.', id: 'object not found', message: 'Object Not Found.' });
+  return jsonRes(req, res, 400, { error: 'Bad Request. No Object Found.', id: 'object not found', message: 'Object Not Found.' });
 };
 
 
