@@ -14,7 +14,7 @@ function initMap() {
     });
     map.addListener('click', (e) => {   //Add a click event to add a marker
         if(tempMarker) tempMarker.setMap(null);
-        tempMarker = new google.maps.Marker({position: e.latLng, map: map});
+        tempMarker = new google.maps.Marker({position: e.latLng, map: map, icon: { url: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png" }});
         map.setZoom(14);
         map.panTo(tempMarker.getPosition());
         clearForm();
