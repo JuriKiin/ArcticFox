@@ -1,9 +1,11 @@
 let map;
 let markers = [];
 let tempMarker;
+let bounds;
 
 //Initalize the map
 function initMap() {
+    bounds = new google.maps.LatLngBounds();
     map = new google.maps.Map(document.getElementById('map'), { //Create the map
         center: {lat: 43.084587, lng: -77.674347},
         zoom: 13,
@@ -35,6 +37,9 @@ function addMarkersFromData(e) {
     var infowindow = new google.maps.InfoWindow({
         content: contentString
       });
+    
+    bounds.extend({lat: parseFloat(e.lat), lng: parseFloat(e.lng)});
+    map.fitBounds(bounds);
 
     marker.addListener('click', () => {
         map.setZoom(15);
