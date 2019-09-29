@@ -1,22 +1,23 @@
 window.onload = () => {
-    getPlaces(10);
+    getPlaces('/places?size=10&filter=date');
 }
 
-function getPlaces() {
+function getPlaces(url) {
     //Make 
-    fetch('/places', {
+    fetch(url, {
         method: 'HEAD'
     }).then(res => {
         console.log(res);
     });
 
     //Make a call to the server to get 10 places
-    this.fetch('/places', {
+    this.fetch(url, {
         'Content-Type': 'application/json',
         'Accept': 'application/json'
     }).then(res => res.json()) .then(data => {
+        document.getElementById('places').innerHTML = '';
         document.getElementById('places').style.opacity = 1.0;
-        document.getElementById('refresh').style.display = 'none';
+        document.getElementById('refresh').style.visibility = 'hidden';
         data.results.forEach(function(e) {   //Add each place to the list
             addPlaceToList(e);
             addMarkersFromData(e);
@@ -72,7 +73,7 @@ function updatePlace() {
         showToast("Make sure you fill out every box.", 2000);
         return;
     }
-
+    //Make the fetch call
     fetch('updatePlace?id='+document.querySelector('#submit').getAttribute('d-id'), {
         method: 'PUT',
         body: JSON.stringify(place),
@@ -80,12 +81,13 @@ function updatePlace() {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
         }
-    }).then((res) => {
+    }).then((res) => {  //On a response
         if(res.status == 204) {
-            console.log(res);
+            console.log(res);   //Log our response
             showToast("Place Updated", 2000);
+            //Set our refresh button letting the user know the list isn't up to date.
             document.getElementById('places').style.opacity = 0.7;
-            document.getElementById('refresh').style.display = 'block';
+            document.getElementById('refresh').style.visibility = 'visible';
         }
     }).catch(() => {
         showToast('Error Updating Place. Try Again.', 2000);
@@ -172,4 +174,16 @@ function showToast(text, time) {
     toast.innerText = text;
     toast.className = "show";
     setTimeout(function(){ toast.className = toast.className.replace("show", ""); }, time);
+}
+
+function changeSort(e) {
+    if(e.getAttribute('data-sortType') === 'date') {
+        e.setAttribute('data-sortType','name');
+        e.innerText = 'Sort by: name';
+        getPlaces('places?filter=name');
+    } else {
+        e.setAttribute('data-sortType','date');
+        e.innerText = 'Sort by: date';
+        getPlaces('places?filter=date');
+    }
 }

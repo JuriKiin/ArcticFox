@@ -61,7 +61,21 @@ const jsonMetaResponse = (req, res, statusCode) => {
 const getPlaces = (req, res, url) => {
   const copy = [...places.results]; // Make a copy for array sorting
   const params = new URLSearchParams(url.search); // Get the parameters
-  
+
+  // Date Sort taken from:
+  // https://stackoverflow.com/questions/10123953/how-to-sort-an-array-by-a-date-property
+  // Return them in the order of date
+  if (params.get('filter') && params.get('filter') === 'date') {
+    const dateArr = copy.sort((a, b) => new Date(b.created) - new Date(a.created));
+    return jsonRes(req, res, 200, { results: dateArr });
+  }
+  // Filter the results by alphabetical order.
+  if (params.get('filter') && params.get('filter') === 'name') {
+    return jsonRes(req, res, 200, { results: copy.sort((a, b) => a.name > b.name) });
+  }
+
+  // Filtering size last so we can filter and then reduce the
+  // amount of places we're returning.
   // If we have a size parameter, limit the number of places we're sending.
   if (params.get('size')) {
     if (params.get('size') >= places.results.length) return jsonRes(req, res, 200, places); // If our passed in size is too large, send all of them.
@@ -70,17 +84,6 @@ const getPlaces = (req, res, url) => {
       results: places.results.slice(0, params.get('size')),
     };
     return jsonRes(req, res, 200, limitedPlaces); // Return the limited places
-  }
-
-  // Date Sort taken from:
-  // https://stackoverflow.com/questions/10123953/how-to-sort-an-array-by-a-date-property
-  // Return them in the order of date
-  if (params.get('filter') && params.get('filter') === 'date') {
-    return jsonRes(req, res, 200, copy.sort((a, b) => new Date(b.created) - new Date(a.created)));
-  }
-  //Filter the results by alphabetical order.
-  if (params.get('filter') && params.get('filter') === 'name') {
-    return jsonRes(req, res, 200, copy.sort((a, b) => a.name > b.name));
   }
 
   return jsonRes(req, res, 200, places); // Otherwise, just send places.

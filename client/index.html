@@ -49,11 +49,14 @@
                 from {bottom: 30px; opacity: 1;}
                 to {bottom: 0; opacity: 0;}
             }
+            .height-places {
+                height:48%;
+            }
         </style>
     </head>
     <body class='body-clear height-full'>
         <div class='align-left pad-left-5 bg-water' style='height: 10%'>
-            <span class='font-header body-clear pad-top-10p snow font-lg d-inline margin-top-20p' style='line-height: 200%'>ArcticFox</span>
+            <span class='font-header body-clear pad-top-10p snow font-lg d-inline margin-top-10p' style='line-height: 200%'>ArcticFox</span>
             <img src='media/logo.png' width='50' height='50' class='d-inline'>
         </div>
 
@@ -65,13 +68,16 @@
                     <input type='text' class='pad-10p item-50' placeholder="Longitude" id='lng' readonly>
                 </div>
                 <div class='grid-1 margin-5'>
-                    <input type='text' placeholder="Name" class='margin-10p pad-10p item-100' id='name' maxlength="15">
+                    <input type='text' placeholder="Name" class='margin-10p pad-10p item-100' id='name' maxlength="25">
                     <input type='text' placeholder="Description" class='margin-10p pad-10p item-100' id='desc' maxlength="50">
                 </div>
                 <button class='pulse bor-none pad-10p item-20 margin-left-5 bg-silk snow font-header font-sm' onclick="submitForm(this)" id='submit'>Add</button>
             </div>
-            <h2 id='refresh' class='font-sm font-header link-subtle align-center' onclick="getPlaces()">Refresh</h2>
-            <div id='places' class='o-scroll height-half'></div>
+            <div class='grid-2 bold margin-top-10p'>
+                <h2 id='refresh' class='font-sm font-header link-subtle align-center bor-1 pad-10p' onclick="getPlaces()">Refresh</h2>
+                <h2 id='sort' class='font-sm font-header link-subtle align-center bor-1 pad-10p' onclick="changeSort(this)" data-sortType="date">Sort by: Date</h2>
+            </div>
+            <div id='places' class='o-scroll height-places'></div>
         </div>
 
         <div class='f-right bg-rock item-75' style='height:90%' id='map'></div>
