@@ -41,7 +41,7 @@ function addMarkersFromData(e) {
     bounds.extend({lat: parseFloat(e.lat), lng: parseFloat(e.lng)});
     map.fitBounds(bounds);
 
-    marker.addListener('click', () => {
+    marker.addListener('click', () => { //Add a marker click event to pan to it and show the information window.
         map.setZoom(15);
         map.setCenter(marker.getPosition());
         infowindow.open(map, marker);

@@ -185,6 +185,7 @@ function placeIsValid(place) {
     } else return true;
 }
 
+//This function shows a toast with a given text and duration.
 function showToast(text, time) {
     let toast = document.getElementById("snackbar");
     toast.innerText = text;
@@ -192,11 +193,13 @@ function showToast(text, time) {
     setTimeout(function(){ toast.className = toast.className.replace("show", ""); }, time);
 }
 
+//This function simply calls a generic getplaces call if we need a refresh.
 function refresh() {
     if(document.getElementById('refresh').style.opacity != 1.0) return;
     getPlaces('/places?size=10&filter=date');
 }
 
+//This function changes the sorting method for the places list.
 function changeSort(e) {
     if(e.getAttribute('data-sortType') === 'date') {
         e.setAttribute('data-sortType','name');
